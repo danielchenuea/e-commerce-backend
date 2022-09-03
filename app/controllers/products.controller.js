@@ -31,7 +31,7 @@ module.exports = {
           });
       })
     } catch (error) {
-      res.send("Algum erro ocorreu")
+      res.send("Algum erro ocorreu - Produtos - 1")
     }
   },
 
@@ -46,7 +46,7 @@ module.exports = {
       // Adiciona o produto ao banco
       Products.create(novo_produto).then((prod) =>{
 
-        res.json(prod)
+        res.status(201).send()
         
       // Se ocorrer erro ao criar
       }).catch((erro) =>{
@@ -56,7 +56,7 @@ module.exports = {
         });
       })
     } catch (error) {
-      res.send("Algum erro ocorreu")
+      res.send("Algum erro ocorreu - Produtos - 2")
     }
   },
 
@@ -89,7 +89,7 @@ module.exports = {
       }
 
     } catch (error) {
-      res.send("Algum erro ocorreu")
+      res.send("Algum erro ocorreu - Produtos - 3")
     }
   },
   // Modificar produto dentro do banco
@@ -106,7 +106,7 @@ module.exports = {
             return
           }
 
-          res.json(prod)
+          res.status(201).send()
           
         // Se ocorrer erro
         }).catch((erro) =>{
@@ -123,7 +123,7 @@ module.exports = {
         return
       }
     } catch (error) {
-      res.send("Algum erro ocorreu - ", error)
+      res.send("Algum erro ocorreu - Produtos - 4", error)
     }
   },
 
@@ -141,7 +141,7 @@ module.exports = {
           return
         }
 
-        res.json(prod)
+        res.status(201).send()
         
         // Se ocorrer erro ao deletar
         }).catch((erro) =>{
@@ -155,7 +155,7 @@ module.exports = {
         return
       }
     } catch (error) {
-      res.send("Algum erro ocorreu")
+      res.send("Algum erro ocorreu - Produtos - 5")
     }
   }
 

@@ -22,11 +22,11 @@ module.exports = {
             });
         })
       }else{
-          res.send("É preciso passar um usuário.");
+          res.status(201).send("É preciso passar um usuário.");
           return
       }        
     } catch (error) {
-      res.send("Algum erro ocorreu - Carrinho - 1")
+      res.status(201).send("Algum erro ocorreu - Carrinho - 1")
     }
   },
 
@@ -53,13 +53,13 @@ module.exports = {
           Products.find({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}).then((produtos) => {
 
             if (produtos.length == 0){
-              res.json("Item não encontrado.");
+              res.status(201).send("Item não encontrado.");
               return
             }
             else{
               // Verifica se existe o estoque está válido
               if (produtos[0].quantidade_estoque < 0 || produtos[0].permitir_compra == false){
-                res.json("Algum erro aconteceu ao tentar adicionar itens.");
+                res.status(201).send("Algum erro aconteceu ao tentar adicionar itens.");
                 return
               }
             }
@@ -98,7 +98,7 @@ module.exports = {
               Products.updateOne({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}, 
               {"quantidade_estoque": nova_qtd_produtos}).then(() =>{
 
-                res.json("Sucesso")
+                res.status(201).send()
                 return
 
                 // Se ocorrer erro com update estoque
@@ -130,11 +130,11 @@ module.exports = {
             });
         })
       }else{
-        res.send("Algum erro aconteceu ao tentar adicionar itens.");
+        res.status(201).send("Algum erro aconteceu ao tentar adicionar itens.");
         return
       }      
     } catch (error) {
-      res.send("Algum erro ocorreu - Carrinho - 2")
+      res.status(201).send("Algum erro ocorreu - Carrinho - 2")
     }
   },
 
@@ -166,17 +166,17 @@ module.exports = {
             prod_id = (produtos[0].titulo + "_" + produtos[0].fornecedor).toLowerCase()
 
             if (produtos.length == 0){
-              res.json("Item não encontrado.");
+              res.status(201).send("Item não encontrado.");
               return
             }
             else if(!(prod_id in carrinho.produtos)){ // Verifica se há produtos no carrinho
-              res.json("Não existe esse item no carrinho");
+              res.status(201).send("Não existe esse item no carrinho");
               return
             }
             else{
               // Verifica se existe o estoque está válido
               if (produtos[0].quantidade_estoque < 0 || produtos[0].permitir_compra == false){
-                res.json("Algum erro aconteceu ao tentar adicionar itens.");
+                res.status(201).send("Algum erro aconteceu ao tentar adicionar itens.");
                 return
               }
             }
@@ -192,7 +192,7 @@ module.exports = {
                 nova_qtd_produtos = produtos[0].quantidade_estoque - info_carrinho.quantidade
 
               }else{
-                res.json("Não foi possivel adicionar essa quantidade de itens.");
+                res.status(201).send("Não foi possivel adicionar essa quantidade de itens.");
                 return
               }
             }else if (info_carrinho.modo_adicionar == false){ // Retirar itens do carrinho
@@ -210,7 +210,7 @@ module.exports = {
                   carrinho.quantidade_produtos -= 1 
                 }
               }else{
-                res.json("Não foi possivel retirar essa quantidade de itens.");
+                res.status(201).send("Não foi possivel retirar essa quantidade de itens.");
                 return
               }
             }
@@ -222,7 +222,7 @@ module.exports = {
               Products.updateOne({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}, 
               {"quantidade_estoque": nova_qtd_produtos}).then(() =>{
 
-                res.json("Sucesso")
+                res.status(201).send()
                 return
 
                 // Se ocorrer erro com update estoque
@@ -255,11 +255,11 @@ module.exports = {
         })
 
       }else{
-        res.send("Algum erro aconteceu ao tentar modificar itens.");
+        res.status(201).send("Algum erro aconteceu ao tentar modificar itens.");
         return
       }      
     } catch (error) {
-      res.send("Algum erro ocorreu - Carrinho - 3")
+      res.status(201).send("Algum erro ocorreu - Carrinho - 3")
     }
   },
 
@@ -287,17 +287,17 @@ module.exports = {
             prod_id = (produtos[0].titulo + "_" + produtos[0].fornecedor).toLowerCase()
 
             if (produtos.length == 0){
-              res.json("Item não encontrado.");
+              res.status(201).send("Item não encontrado.");
               return
             }
             else if(!(prod_id in carrinho.produtos)){ // Verifica se há produtos no carrinho
-              res.json("Não existe esse item no carrinho");
+              res.status(201).send("Não existe esse item no carrinho");
               return
             }
             else{
               // Verifica se existe o estoque está válido
               if (produtos[0].quantidade_estoque < 0 || produtos[0].permitir_compra == false){
-                res.json("Algum erro aconteceu ao deletar itens.");
+                res.status(201).send("Algum erro aconteceu ao deletar itens.");
                 return
               }
             }
@@ -317,7 +317,7 @@ module.exports = {
               Products.updateOne({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}, 
               {"quantidade_estoque": nova_qtd_produtos}).then(() =>{
 
-                res.json("Sucesso")
+                res.status(201).send()
                 return
 
                 // Se ocorrer erro com update estoque
@@ -350,12 +350,12 @@ module.exports = {
         })
 
       }else{
-        res.send("Algum erro aconteceu ao tentar modificar itens.");
+        res.status(201).send("Algum erro aconteceu ao tentar modificar itens.");
         return
 
       }   
     } catch (error) {
-      res.send("Algum erro ocorreu - Carrinho - 4")
+      res.status(201).send("Algum erro ocorreu - Carrinho - 4")
     }
   },
 
@@ -407,7 +407,7 @@ module.exports = {
           // Atualizar carrinho
           Usuario.updateOne({"email": info_carrinho.email}, {"carrinho": carrinho}).then(() =>{
 
-            res.json("Sucesso")
+            res.status(201).send()
             return
 
           // Se ocorrer erro com update carrinho
@@ -425,12 +425,12 @@ module.exports = {
             });
         })
       }else{
-        res.send("Algum erro aconteceu ao tentar modificar itens.");
+        res.status(201).send("Algum erro aconteceu ao tentar modificar itens.");
         return
 
       }   
     } catch (error) {
-      res.send("Algum erro ocorreu - Carrinho - 5")
+      res.status(201).send("Algum erro ocorreu - Carrinho - 5")
     }
   },
 }

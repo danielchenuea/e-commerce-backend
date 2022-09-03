@@ -17,7 +17,7 @@ module.exports = {
             });
         })
       } catch (error) {
-        res.send("Algum erro ocorreu")
+        res.status(201).send("Algum erro ocorreu - Usuario - 1")
       }
     },
 
@@ -39,7 +39,7 @@ module.exports = {
             // Adiciona o usuario ao banco
             Usuario.create(novo_usuario).then((user) =>{
 
-              res.json(user)
+              res.status(201).send()
               
             // Se ocorrer erro
             }).catch((erro) =>{
@@ -49,11 +49,11 @@ module.exports = {
               });
             })            
           }else{
-            res.send("Esse usuário já existe")
+            res.status(201).send("Esse usuário já existe")
           }
         })
       } catch (error) {
-        res.send("Algum erro ocorreu")
+        res.status(201).send("Algum erro ocorreu - Usuario - 2")
       }
         
     },
@@ -80,7 +80,7 @@ module.exports = {
         });
       })
     } catch (error) {
-      res.send("Algum erro ocorreu")
+      res.status(201).send("Algum erro ocorreu - Usuario - 3")
     }
     
   },
@@ -93,11 +93,11 @@ module.exports = {
       Usuario.updateOne({"email": usuario_var.email}, usuario_var).then((user) =>{
 
         if (user.length == 0){
-          res.json("Nenhum usuario encontrado")
+          res.status(201).send("Nenhum usuario encontrado")
           return
         }
 
-        res.json(user)
+        res.status(201).send()
         
       // Se ocorrer erro
       }).catch((erro) =>{
@@ -107,7 +107,7 @@ module.exports = {
         });
       })
     } catch (error) {
-      res.send("Algum erro ocorreu")
+      res.status(201).send("Algum erro ocorreu - Usuario - 4")
     }
 
   },
@@ -124,7 +124,7 @@ module.exports = {
           return
         }
 
-        res.json(user)
+        res.status(201).send()
         
       // Se ocorrer erro
       }).catch((erro) =>{
@@ -134,7 +134,7 @@ module.exports = {
         });
       })        
     } catch (error) {
-      res.send("Algum erro ocorreu")
+      res.status(201).send("Algum erro ocorreu - Usuario - 5")
     }
 
   }
