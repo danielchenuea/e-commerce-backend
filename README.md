@@ -9,4 +9,4 @@ npm install
 node app
 ```
 
-ApiAry sendo construído, depois boto link
+ApiAry: [Aqui](https://ecommercebackend1.docs.apiary.io)
