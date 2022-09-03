@@ -19,7 +19,7 @@ module.exports = {
   async lista_produtos(req, res){
     try {
       // Se encontrar
-      Products.find({"permitir_compra": req.apenas_permitidos}).then((produtos) => {
+      Products.find({"permitir_compra": true}).then((produtos) => {
 
           res.send(produtos)
 
@@ -43,31 +43,16 @@ module.exports = {
 
       novo_produto.data_ultima_entrada = new Date().getTime()
 
-      Products.countDocuments({}, function(err, result) {
-        if (err) {
-          console.log(err);
-        }
-      }).then((qtd) => {
+      // Adiciona o produto ao banco
+      Products.create(novo_produto).then((prod) =>{
 
-        novo_produto.id_produto = qtd + 1
-
-        // Adiciona o produto ao banco
-        Products.create(novo_produto).then((prod) =>{
-
-          res.json(prod)
-          
-        // Se ocorrer erro ao criar
-        }).catch((erro) =>{
-          res.status(500).send({
-            message:
-              erro.message || "Algum erro aconteceu ao tentar adicionar produtos."
-          });
-        })
-      // Erro encontrar documentos
+        res.json(prod)
+        
+      // Se ocorrer erro ao criar
       }).catch((erro) =>{
         res.status(500).send({
-        message:
-        erro.message || "Algum erro aconteceu ao tentar encontrar estoque."
+          message:
+            erro.message || "Algum erro aconteceu ao tentar adicionar produtos."
         });
       })
     } catch (error) {

@@ -58,28 +58,28 @@ module.exports = {
             }
             else{
               // Verifica se existe o estoque está válido
-              if (produtos[0].quantidade_estoque <= 0 || produtos[0].permitir_compra == false){
+              if (produtos[0].quantidade_estoque < 0 || produtos[0].permitir_compra == false){
                 res.json("Algum erro aconteceu ao tentar adicionar itens.");
                 return
               }
             }
 
-            prod = produtos[0].id_produto
+            prod = produtos[0]._id.toString()
 
             // Se existe o produto no carrinho
-            if (prod in carrinho){
+            if (prod in carrinho.produtos){
 
               carrinho.quantidade_itens += info_carrinho.quantidade
               carrinho.valor_total += produtos[0].preço_individual * info_carrinho.quantidade
 
-              carrinho[prod].quantidade += info_carrinho.quantidade
+              carrinho.produtos[prod].quantidade += info_carrinho.quantidade
 
             }else{
               carrinho.quantidade_produtos += 1
               carrinho.quantidade_itens += info_carrinho.quantidade
               carrinho.valor_total += produtos[0].preço_individual * info_carrinho.quantidade
 
-              carrinho[prod] = {
+              carrinho.produtos[prod] = {
                 "titulo": info_carrinho.titulo,
                 "fornecedor": info_carrinho.fornecedor,
                 "quantidade": info_carrinho.quantidade,
@@ -88,7 +88,7 @@ module.exports = {
 
             }
 
-            nova_qtd_produtos = produtos[0].quantidade_estoque - 1
+            nova_qtd_produtos = produtos[0].quantidade_estoque - info_carrinho.quantidade
             
             // Atualizar carrinho
             Usuario.updateOne({"email": info_carrinho.email}, {"carrinho": carrinho}).then(() =>{
@@ -166,27 +166,27 @@ module.exports = {
               res.json("Item não encontrado.");
               return
             }
-            else if(!produtos[0].id_produto in carrinho){ // Verifica se há produtos no carrinho
+            else if(!(produtos[0]._id.toString() in carrinho.produtos)){ // Verifica se há produtos no carrinho
               res.json("Não existe esse item no carrinho");
               return
             }
             else{
               // Verifica se existe o estoque está válido
-              if (produtos[0].quantidade_estoque <= 0 || produtos[0].permitir_compra == false){
+              if (produtos[0].quantidade_estoque < 0 || produtos[0].permitir_compra == false){
                 res.json("Algum erro aconteceu ao tentar adicionar itens.");
                 return
               }
             }
 
-            prod_id = produtos[0].id_produto
+            prod_id = produtos[0]._id.toString()
 
-            if (info_carrinho.modo_adicionar){ // Adicionar itens no carrinho
+            if (info_carrinho.modo_adicionar == true){ // Adicionar itens no carrinho
               if (produtos[0].quantidade_estoque >= info_carrinho.quantidade){
 
                 carrinho.quantidade_itens += info_carrinho.quantidade
                 carrinho.valor_total += produtos[0].preço_individual * info_carrinho.quantidade
 
-                carrinho[prod_id].quantidade += info_carrinho.quantidade
+                carrinho.produtos[prod_id].quantidade += info_carrinho.quantidade
 
                 nova_qtd_produtos = produtos[0].quantidade_estoque - info_carrinho.quantidade
 
@@ -194,18 +194,18 @@ module.exports = {
                 res.json("Não foi possivel adicionar essa quantidade de itens.");
                 return
               }
-            }else{ // Retirar itens do carrinho
-              if (carrinho[prod_id].quantidade >= info_carrinho.quantidade){
+            }else if (info_carrinho.modo_adicionar == false){ // Retirar itens do carrinho
+              if (carrinho.produtos[prod_id].quantidade >= info_carrinho.quantidade){
 
                 carrinho.quantidade_itens -= info_carrinho.quantidade
                 carrinho.valor_total -= produtos[0].preço_individual * info_carrinho.quantidade
 
-                carrinho[prod_id].quantidade -= info_carrinho.quantidade
+                carrinho.produtos[prod_id].quantidade -= info_carrinho.quantidade
 
                 nova_qtd_produtos = produtos[0].quantidade_estoque + info_carrinho.quantidade
 
-                if (carrinho[prod_id].quantidade == 0){ // Se retirou todos os itens
-                  delete carrinho[prod_id]
+                if (carrinho.produtos[prod_id].quantidade == 0){ // Se retirou todos os itens
+                  delete carrinho.produtos[prod_id]
                   carrinho.quantidade_produtos -= 1 
                 }
               }else{
@@ -287,27 +287,27 @@ module.exports = {
               res.json("Item não encontrado.");
               return
             }
-            else if(!produtos[0].id_produto in carrinho){ // Verifica se há produtos no carrinho
+            else if(!(produtos[0]._id.toString() in carrinho.produtos)){ // Verifica se há produtos no carrinho
               res.json("Não existe esse item no carrinho");
               return
             }
             else{
               // Verifica se existe o estoque está válido
-              if (produtos[0].quantidade_estoque <= 0 || produtos[0].permitir_compra == false){
+              if (produtos[0].quantidade_estoque < 0 || produtos[0].permitir_compra == false){
                 res.json("Algum erro aconteceu ao deletar itens.");
                 return
               }
             }
 
-            prod_id = produtos[0].id_produto
+            prod_id = produtos[0]._id.toString()
 
             carrinho.quantidade_produtos -= 1
-            carrinho.quantidade_itens -= carrinho[prod_id].quantidade
-            carrinho.valor_total -= produtos[0].preço_individual * carrinho[prod_id].quantidade
+            carrinho.quantidade_itens -= carrinho.produtos[prod_id].quantidade
+            carrinho.valor_total -= produtos[0].preço_individual * carrinho.produtos[prod_id].quantidade
 
-            nova_qtd_produtos = produtos[0].quantidade_estoque + carrinho[prod_id].quantidade
+            nova_qtd_produtos = produtos[0].quantidade_estoque + carrinho.produtos[prod_id].quantidade
 
-            delete carrinho[prod_id]
+            delete carrinho.produtos[prod_id]
             
             // Atualizar carrinho
             Usuario.updateOne({"email": info_carrinho.email}, {"carrinho": carrinho}).then(() =>{
@@ -355,6 +355,81 @@ module.exports = {
       }   
     } catch (error) {
       res.send("Algum erro ocorreu - Carrinho - 4")
+    }
+  },
+
+   // Remover todos produtos do carrinho
+  // { 
+  //  email_usuario: string
+  // }
+  //
+  async remover_tudo(req, res){
+    try {
+      info_carrinho = req.body;
+
+      if ("email" in info_carrinho){
+        
+        // Encontrar carrinho do usuario
+        Usuario.find({"email": info_carrinho.email}).then((user) => {
+
+          carrinho = user[0].carrinho
+        
+          items = Object.getOwnPropertyNames(carrinho.produtos)
+
+          for (let i = 0; i < items.length; i++){
+            tit_produto = carrinho.produtos[items[i]].titulo
+            for_produto = carrinho.produtos[items[i]].fornecedor
+
+            Products.updateOne({"titulo": tit_produto, "fornecedor": for_produto}, 
+            {$inc: 
+              {"quantidade_estoque": carrinho.produtos[items[i]].quantidade}
+            }).then(() =>{
+
+              console.log("Sucesso", i)
+
+            // Se ocorrer erro com update estoque
+            }).catch((erro) =>{
+              res.status(500).send({
+              message:
+              erro.message || "Algum erro aconteceu ao tentar atualizar estoque."
+              });
+            })
+          }
+
+          carrinho = {
+            "produtos": {},
+            "quantidade_produtos": 0,
+            "quantidade_itens": 0,
+            "valor_total": 0
+          }
+
+          // Atualizar carrinho
+          Usuario.updateOne({"email": info_carrinho.email}, {"carrinho": carrinho}).then(() =>{
+
+            res.json("Sucesso")
+            return
+
+          // Se ocorrer erro com update carrinho
+          }).catch((erro) =>{
+            res.status(500).send({
+              message:
+                erro.message || "Algum erro aconteceu ao tentar atualizar carrinho."
+            });
+          })
+        // Se não encontrar usuario
+        }).catch((erro) => {
+            res.status(500).send({
+              message:
+                erro.message || "Algum erro aconteceu ao tentar encontrar o usuario."
+            });
+        })
+      }else{
+        res.send("Algum erro aconteceu ao tentar modificar itens.");
+        return
+
+      }   
+    } catch (error) {
+      res.send("Algum erro ocorreu - Carrinho - 5")
     }
   },
 }

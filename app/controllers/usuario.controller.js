@@ -7,7 +7,7 @@ module.exports = {
         // Se encontrar
         Usuario.find().then((user) => {
 
-            res.send(user)
+          res.send(user)
 
         // Se não encontrar
         }).catch((erro) => {
@@ -29,6 +29,7 @@ module.exports = {
 
         novo_usuario.data_cadastro = new Date().getTime()
         novo_usuario.carrinho = {
+          "produtos": {},
           "quantidade_produtos": 0,
           "quantidade_itens": 0,
           "valor_total": 0

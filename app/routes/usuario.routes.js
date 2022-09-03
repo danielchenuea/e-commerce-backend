@@ -14,5 +14,7 @@ module.exports = function (application) {
     application.post('/adicionar_item', CarrinhoController.adicionar_item)
     application.post('/modificar_item', CarrinhoController.modificar_item)
     application.post('/deletar_item', CarrinhoController.remover_item)
+    application.post('/deletar_carrinho', CarrinhoController.remover_tudo)
+
 
 }
