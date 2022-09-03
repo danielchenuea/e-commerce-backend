@@ -31,7 +31,7 @@ module.exports = {
           });
       })
     } catch (error) {
-      res.send("Algum erro ocorreu - Produtos - 1")
+      res.status(500).send({message: "Algum erro ocorreu - Produtos - 1"})
     }
   },
 
@@ -46,7 +46,7 @@ module.exports = {
       // Adiciona o produto ao banco
       Products.create(novo_produto).then((prod) =>{
 
-        res.status(201).send()
+        res.status(204).send()
         
       // Se ocorrer erro ao criar
       }).catch((erro) =>{
@@ -56,7 +56,7 @@ module.exports = {
         });
       })
     } catch (error) {
-      res.send("Algum erro ocorreu - Produtos - 2")
+      res.status(500).send({message: "Algum erro ocorreu - Produtos - 2"})
     }
   },
 
@@ -70,7 +70,7 @@ module.exports = {
         Products.findOne({"titulo": produto.titulo, "fornecedor": produto.fornecedor}).then((prod) =>{
 
           if (prod.length == 0){
-            res.json("Nenhum produto encontrado")
+            res.status(404).send({message: "Nenhum produto encontrado"})
             return
           }
 
@@ -84,12 +84,12 @@ module.exports = {
           });
         })
       }else{
-        res.send("Algum erro aconteceu ao tentar encontrar esse produto.");
+        res.status(500).send({message: "Algum erro aconteceu ao tentar encontrar esse produto."});
         return
       }
 
     } catch (error) {
-      res.send("Algum erro ocorreu - Produtos - 3")
+      res.status(500).send({message: "Algum erro ocorreu - Produtos - 3"})
     }
   },
   // Modificar produto dentro do banco
@@ -102,11 +102,11 @@ module.exports = {
         Products.updateOne({"titulo": produto.titulo, "fornecedor": produto.fornecedor}, produto).then((prod) =>{
 
           if (prod.length == 0){
-            res.json("Nenhum usuario encontrado")
+            res.status(404).send({message: "Nenhum produto encontrado"})
             return
           }
 
-          res.status(201).send()
+          res.status(204).send()
           
         // Se ocorrer erro
         }).catch((erro) =>{
@@ -119,11 +119,11 @@ module.exports = {
         })
       }
       else{
-        res.send("Algum erro aconteceu ao tentar modificar o produto.");
+        res.status(500).send({message: "Algum erro aconteceu ao tentar modificar o produto."});
         return
       }
     } catch (error) {
-      res.send("Algum erro ocorreu - Produtos - 4", error)
+      res.status(500).send({message: "Algum erro ocorreu - Produtos - 4"})
     }
   },
 
@@ -137,11 +137,11 @@ module.exports = {
       // Deleta o usuario do banco
       Products.deleteOne({"titulo": produto.titulo, "fornecedor": produto.fornecedor}).then((prod) =>{
         if (prod.length == 0){
-          res.json("Nenhum usuario encontrado")
+          res.status(404).send({message: "Nenhum produto encontrado"})
           return
         }
 
-        res.status(201).send()
+        res.status(204).send()
         
         // Se ocorrer erro ao deletar
         }).catch((erro) =>{
@@ -151,11 +151,11 @@ module.exports = {
           });
         })
       }else{
-        res.send("Algum erro aconteceu ao tentar deletar o produto.");
+        res.status(500).send("Algum erro aconteceu ao tentar deletar o produto.");
         return
       }
     } catch (error) {
-      res.send("Algum erro ocorreu - Produtos - 5")
+      res.status(500).send({message: "Algum erro ocorreu - Produtos - 5"})
     }
   }
 

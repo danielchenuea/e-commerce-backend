@@ -17,7 +17,7 @@ module.exports = {
             });
         })
       } catch (error) {
-        res.status(201).send("Algum erro ocorreu - Usuario - 1")
+        res.status(500).send("Algum erro ocorreu - Usuario - 1")
       }
     },
 
@@ -39,7 +39,7 @@ module.exports = {
             // Adiciona o usuario ao banco
             Usuario.create(novo_usuario).then((user) =>{
 
-              res.status(201).send()
+              res.status(204).send()
               
             // Se ocorrer erro
             }).catch((erro) =>{
@@ -49,11 +49,11 @@ module.exports = {
               });
             })            
           }else{
-            res.status(201).send("Esse usuário já existe")
+            res.status(500).send("Esse usuário já existe")
           }
         })
       } catch (error) {
-        res.status(201).send("Algum erro ocorreu - Usuario - 2")
+        res.status(500).send("Algum erro ocorreu - Usuario - 2")
       }
         
     },
@@ -66,7 +66,7 @@ module.exports = {
       Usuario.findOne({"email": usuario_var.email}).then((user) =>{
 
         if (user.length == 0){
-          res.json("Nenhum usuario encontrado")
+          res.status(404).send({message: "Nenhum usuário encontrado"})
           return
         }
 
@@ -80,7 +80,7 @@ module.exports = {
         });
       })
     } catch (error) {
-      res.status(201).send("Algum erro ocorreu - Usuario - 3")
+      res.status(500).send("Algum erro ocorreu - Usuario - 3")
     }
     
   },
@@ -93,11 +93,11 @@ module.exports = {
       Usuario.updateOne({"email": usuario_var.email}, usuario_var).then((user) =>{
 
         if (user.length == 0){
-          res.status(201).send("Nenhum usuario encontrado")
+          res.status(404).send("Nenhum usuário encontrado")
           return
         }
 
-        res.status(201).send()
+        res.status(204).send()
         
       // Se ocorrer erro
       }).catch((erro) =>{
@@ -107,7 +107,7 @@ module.exports = {
         });
       })
     } catch (error) {
-      res.status(201).send("Algum erro ocorreu - Usuario - 4")
+      res.status(500).send("Algum erro ocorreu - Usuario - 4")
     }
 
   },
@@ -120,11 +120,11 @@ module.exports = {
       Usuario.deleteOne({"email": usuario_var.email}).then((user) =>{
 
         if (user.length == 0){
-          res.json("Nenhum usuario encontrado")
+          res.status(404).send("Nenhum usuário encontrado")
           return
         }
 
-        res.status(201).send()
+        res.status(204).send()
         
       // Se ocorrer erro
       }).catch((erro) =>{
@@ -134,7 +134,7 @@ module.exports = {
         });
       })        
     } catch (error) {
-      res.status(201).send("Algum erro ocorreu - Usuario - 5")
+      res.status(500).send("Algum erro ocorreu - Usuario - 5")
     }
 
   }
