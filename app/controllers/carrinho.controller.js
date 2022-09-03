@@ -63,8 +63,9 @@ module.exports = {
                 return
               }
             }
-
-            prod = produtos[0]._id.toString()
+            
+            // slug id
+            prod = (produtos[0].titulo + "_" + produtos[0].fornecedor).toLowerCase()
 
             // Se existe o produto no carrinho
             if (prod in carrinho.produtos){
@@ -162,11 +163,13 @@ module.exports = {
           // Encontrar produto sendo modificado
           Products.find({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}).then((produtos) => {
 
+            prod_id = (produtos[0].titulo + "_" + produtos[0].fornecedor).toLowerCase()
+
             if (produtos.length == 0){
               res.json("Item não encontrado.");
               return
             }
-            else if(!(produtos[0]._id.toString() in carrinho.produtos)){ // Verifica se há produtos no carrinho
+            else if(!(prod_id in carrinho.produtos)){ // Verifica se há produtos no carrinho
               res.json("Não existe esse item no carrinho");
               return
             }
@@ -177,8 +180,6 @@ module.exports = {
                 return
               }
             }
-
-            prod_id = produtos[0]._id.toString()
 
             if (info_carrinho.modo_adicionar == true){ // Adicionar itens no carrinho
               if (produtos[0].quantidade_estoque >= info_carrinho.quantidade){
@@ -283,11 +284,13 @@ module.exports = {
           // Encontrar produto sendo modificado
           Products.find({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}).then((produtos) => {
 
+            prod_id = (produtos[0].titulo + "_" + produtos[0].fornecedor).toLowerCase()
+
             if (produtos.length == 0){
               res.json("Item não encontrado.");
               return
             }
-            else if(!(produtos[0]._id.toString() in carrinho.produtos)){ // Verifica se há produtos no carrinho
+            else if(!(prod_id in carrinho.produtos)){ // Verifica se há produtos no carrinho
               res.json("Não existe esse item no carrinho");
               return
             }
@@ -298,8 +301,6 @@ module.exports = {
                 return
               }
             }
-
-            prod_id = produtos[0]._id.toString()
 
             carrinho.quantidade_produtos -= 1
             carrinho.quantidade_itens -= carrinho.produtos[prod_id].quantidade

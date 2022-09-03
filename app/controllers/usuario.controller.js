@@ -34,18 +34,23 @@ module.exports = {
           "quantidade_itens": 0,
           "valor_total": 0
         }
+        Usuario.find({"email": novo_usuario.email}).then((repeated) => {
+          if(repeated.length == 0){
+            // Adiciona o usuario ao banco
+            Usuario.create(novo_usuario).then((user) =>{
 
-        // Adiciona o usuario ao banco
-        Usuario.create(novo_usuario).then((user) =>{
-
-          res.json(user)
-          
-        // Se ocorrer erro
-        }).catch((erro) =>{
-          res.status(500).send({
-            message:
-              erro.message || "Algum erro aconteceu ao tentar adicionar usuarios."
-          });
+              res.json(user)
+              
+            // Se ocorrer erro
+            }).catch((erro) =>{
+              res.status(500).send({
+                message:
+                  erro.message || "Algum erro aconteceu ao tentar adicionar usuarios."
+              });
+            })            
+          }else{
+            res.send("Esse usuário já existe")
+          }
         })
       } catch (error) {
         res.send("Algum erro ocorreu")

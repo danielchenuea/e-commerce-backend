@@ -9,6 +9,10 @@ var ProdutoSchema = new Schema({
         type: String, 
         required: true
     },
+    id_produto: {
+        type: String,
+        required: true
+    },
     descricao: {
         type: String,
         required: true
