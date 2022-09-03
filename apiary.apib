@@ -3,78 +3,319 @@ HOST: https://polls.apiblueprint.org/
 
 # e-commerce-backend
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+E-commerce é uma API que permite a manipulação de usuários, produtos e items do carrinho. Cada usuário tem um carrinho.
 
-## Questions Collection [/questions]
+## Usuários [/users]
 
-### List All Questions [GET]
+Métodos para manipulação de usuários.
+
+### Listar todos Usuários [GET]
 
 + Response 200 (application/json)
 
         [
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
+                "_id": "123123123",
+                "nome": "Adam",
+                "email": "adam@teste.com",
+                "data_cadastro": "2022-09-02",
+                "carrinho": {
+                    "produtos": {
+                        "abacate_a": {
+                            "titulo": "Abacate",
+                            "fornecedor": "A",
+                            "quantidade": 1,
+                            "preço_individual": 5
+                        }
+                    },
+                    "quantidade_produtos": 1,
+                    "quantidade_itens": 1,
+                    "valor_total": 5
+                }
             }
         ]
 
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+### Adicionar novo Usuario [POST]
 
 + Request (application/json)
 
+    + Attributes (Usuario)
+
++ Response 204 (application/json)
+
+### Encontrar um Usuario [POST]
+
++ Request (application/json)
+
+    + Attributes (Usuarioemail)
+
++ Response 200 (application/json)
+
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
+            "_id": "123123123",
+            "nome": "Adam",
+            "email": "adam@teste.com",
+            "data_cadastro": "2022-09-02",
+            "carrinho": {
+                "produtos": {
+                    "abacate_a": {
+                        "titulo": "Abacate",
+                        "fornecedor": "A",
+                        "quantidade": 1,
+                        "preço_individual": 5
+                    }
+                },
+                "quantidade_produtos": 1,
+                "quantidade_itens": 1,
+                "valor_total": 5
+            }
         }
 
-+ Response 201 (application/json)
++ Response 404 (application/json)
 
-    + Headers
+        {
+            "message": "Nenhum usuário encontrado"
+        }
+    
 
-            Location: /questions/2
+### Modificar Usuario [POST]
 
-    + Body
++ Request (application/json)
 
+    + Attributes (Usuario)
+
++ Response 204 (application/json)
+
++ Response 404 (application/json)
+
+        {
+            "message": "Nenhum usuário encontrado"
+        }
+    
+### Deletar Usuario [DELETE]
+
++ Request (application/json)
+
+    + Attributes (Usuarioemail)
+
++ Response 204 (application/json)
+
++ Response 404 (application/json)
+
+        {
+            "message": "Nenhum usuário encontrado"
+        }
+    
+## Produtos [/products]
+
+Métodos para manipulação de produtos.
+
+### Listar todos Produtos [GET]
+
++ Response 200 (application/json)
+
+        [
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+                "_id": "124123",
+                "titulo": "Abacate",
+                "descricao": "1",
+                "fornecedor": "A",
+                "data_ultima_entrada": "2022-09-02",
+                "quantidade_estoque": 10,
+                "preço_individual": 5,
+                "permitir_compra": true
             }
+        ]
+
+### Adicionar novo Produto [POST]
+
++ Request (application/json)
+
+    + Attributes (Produto)
+
++ Response 204 (application/json)
+
+### Encontrar um Produto [POST]
+
++ Request (application/json)
+
+    + Attributes (Banana)
+
++ Response 200 (application/json)
+
+        {
+            "_id": "124123",
+            "titulo": "Abacate",
+            "descricao": "1",
+            "fornecedor": "A",
+            "data_ultima_entrada": "2022-09-02",
+            "quantidade_estoque": 10,
+            "preço_individual": 5,
+            "permitir_compra": true
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "Nenhum produto encontrado"
+        }
+    
+
+### Modificar Produto [POST]
+
++ Request (application/json)
+
+    + Attributes (Produto)
+
++ Response 204 (application/json)
+
++ Response 404 (application/json)
+
+        {
+            "message": "Nenhum produto encontrado"
+        }
+    
+### Deletar Produto [DELETE]
+
++ Request (application/json)
+
+    + Attributes (Banana)
+
++ Response 204 (application/json)
+
++ Response 404 (application/json)
+
+        {
+            "message": "Nenhum produto encontrado"
+        }
+
+## Carrinho [/cart]
+
+Métodos para manipulação do carrinho presente dentro do objeto usuário.
+
+### Mostrar Carrinho [POST]
+
++ Request (application/json)
+
+    + Attributes (Usuarioemail)
+
++ Response 200 (application/json)
+
+        {
+            "produtos": {
+                "abacate_a": {
+                    "titulo": "Abacate",
+                    "fornecedor": "A",
+                    "quantidade": 1,
+                    "preço_individual": 5
+                }
+            },
+            "quantidade_produtos": 1,
+            "quantidade_itens": 1,
+            "valor_total": 5
+        }
+    
++ Response 404 (application/json)
+
+        {
+            "message": "Nenhum usuário encontrado"
+        }
+        
+### Adicionar item ao Carrinho [POST]
+
++ Request (application/json)
+
+    + Attributes (Addprodutos)
+
++ Response 204 (application/json)
+
++ Response 400 (application/json)
+
+        {
+            "message": "Algum erro ocorreu ao tentar adicionar item."
+        }
+
+### Modificar um item do Carrinho [POST]
+
+*Note: Permite adicionar ou remover itens do carrinho, dependendo do modo_adicionar.*
+
++ Request (application/json)
+
+    + Attributes (Modprodutos)
+
++ Response 204 (application/json)
+
++ Response 400 (application/json)
+
+        {
+            "message": "Algum erro ocorreu ao tentar modificar o item."
+        }
+    
+
+### Remover item do Carrinho [POST]
+
++ Request (application/json)
+
+    + Attributes (removeprodutos)
+
++ Response 204 (application/json)
+
++ Response 400 (application/json)
+
+        {
+            "message": "Algum erro ocorreu ao tentar modificar o item."
+        }
+    
+### Remover todos os itens do Carrinho [POST]
+
++ Request (application/json)
+
+    + Attributes (Usuarioemail)
+
++ Response 204 (application/json)
+
+# Data Structures
+
+## Usuario (object)
+
+- nome: Adam (string, required)
+- email: adam@teste.com (string, required)
+
+## Usuarioemail (object)
+
+- email: adam@teste.com (string, required)
+
+## Produto (object)
+
+- titulo: Banana (string, required)
+- descricao: Uma Banana (string, required)
+- fornecedor: Geh (string, required)
+- quantidade_estoque: 20 (number, required)
+- preço_individual: 3 (number, required)
+- permitir_compra: true (boolean, required)
+
+## Banana (object)
+
+- titulo: Banana (string, required)
+- fornecedor: Geh (string, required)
+
+## Addprodutos (object)
+
+- email: adam@teste.com (string, required)
+- titulo: Banana (string, required)
+- fornecedor: Geh (string, required)
+- quantidade: 10 (number, required)
+
+## Modprodutos (object)
+
+- email: adam@teste.com (string, required)
+- titulo: Banana (string, required)
+- fornecedor: Geh (string, required)
+- modo_adicionar: true (boolean, required)
+- quantidade: 10 (number, required)
+
+## removeprodutos (object)
+
+- email: adam@teste.com (string, required)
+- titulo: Banana (string, required)
+- fornecedor: Geh (string, required)
