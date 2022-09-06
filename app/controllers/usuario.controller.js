@@ -27,6 +27,8 @@ module.exports = {
         var novo_usuario = new Usuario()
         novo_usuario = req.body;
 
+        if ("nome" in novo_usuario && "email" in novo_usuario){
+
         novo_usuario.data_cadastro = new Date().getTime()
         novo_usuario.carrinho = {
           "produtos": {},
@@ -52,6 +54,10 @@ module.exports = {
             res.status(500).send("Esse usuário já existe")
           }
         })
+      }else{
+        res.status(500).send({message: "Algum erro aconteceu ao tentar adicionar esse usuario."});
+        return
+      }
       } catch (error) {
         res.status(500).send("Algum erro ocorreu - Usuario - 2")
       }
@@ -76,7 +82,7 @@ module.exports = {
       }).catch((erro) =>{
         res.status(500).send({
           message:
-            erro.message || "Algum erro aconteceu ao tentar adicionar usuarios."
+            erro.message || "Algum erro aconteceu ao tentar encontrar o usuario."
         });
       })
     } catch (error) {
@@ -103,7 +109,7 @@ module.exports = {
       }).catch((erro) =>{
         res.status(500).send({
           message:
-            erro.message || "Algum erro aconteceu ao tentar adicionar usuarios."
+            erro.message || "Algum erro aconteceu ao tentar modificar o usuario."
         });
       })
     } catch (error) {
@@ -130,7 +136,7 @@ module.exports = {
       }).catch((erro) =>{
         res.status(500).send({
           message:
-            erro.message || "Algum erro aconteceu ao tentar deletar usuarios."
+            erro.message || "Algum erro aconteceu ao tentar deletar o usuario."
         });
       })        
     } catch (error) {
