@@ -1,5 +1,5 @@
 var app = require('./app/config/server')
 
-app.listen(3000,() => {
+app.listen(process.env.PORT,() => {
   console.log("Servidor ON")
 })
