@@ -70,7 +70,7 @@ module.exports = {
           return
         }
 
-        res.json(user[0])
+        res.send(user)
         
       // Se ocorrer erro
       }).catch((erro) =>{

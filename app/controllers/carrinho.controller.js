@@ -46,8 +46,7 @@ module.exports = {
     try {
     info_carrinho = req.body;
 
-      if ("email" in info_carrinho && "titulo" in info_carrinho && 
-          "fornecedor" in info_carrinho && "quantidade" in info_carrinho){
+      if ("email" in info_carrinho && "id_produto" in info_carrinho && "quantidade" in info_carrinho){
         
         // Encontrar carrinho do usuario
         Usuario.find({"email": info_carrinho.email}).then((user) => {
@@ -55,7 +54,7 @@ module.exports = {
           carrinho = user[0].carrinho
 
           // Encontrar produto sendo modificado
-          Products.find({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}).then((produtos) => {
+          Products.find({"id_produto": info_carrinho.id_produto}).then((produtos) => {
 
             if (produtos.length == 0){
               res.status(400).send({message: "Algum erro ocorreu ao tentar adicionar item."});
@@ -70,7 +69,7 @@ module.exports = {
             }
             
             // slug id
-            prod = (produtos[0].titulo + "_" + produtos[0].fornecedor).toLowerCase()
+            prod = info_carrinho.id_produto
 
             // Se existe o produto no carrinho
             if (prod in carrinho.produtos){
@@ -86,8 +85,8 @@ module.exports = {
               carrinho.valor_total += produtos[0].preço_individual * info_carrinho.quantidade
 
               carrinho.produtos[prod] = {
-                "titulo": info_carrinho.titulo,
-                "fornecedor": info_carrinho.fornecedor,
+                "titulo": produtos[0].titulo,
+                "fornecedor": produtos[0].fornecedor,
                 "quantidade": info_carrinho.quantidade,
                 "preço_individual": produtos[0].preço_individual
               }
@@ -100,7 +99,7 @@ module.exports = {
             Usuario.updateOne({"email": info_carrinho.email}, {"carrinho": carrinho}).then(() =>{
 
               // Atualizar estoque
-              Products.updateOne({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}, 
+              Products.updateOne({"id_produto": info_carrinho.id_produto}, 
               {"quantidade_estoque": nova_qtd_produtos}).then(() =>{
 
                 res.status(204).send()
@@ -156,9 +155,8 @@ module.exports = {
     try {
       info_carrinho = req.body;
 
-      if ("email" in info_carrinho && "titulo" in info_carrinho && 
-          "fornecedor" in info_carrinho && "modo_adicionar" in info_carrinho &&
-          "quantidade" in info_carrinho){
+      if ("email" in info_carrinho && "id_produto" in info_carrinho && 
+          "modo_adicionar" in info_carrinho && "quantidade" in info_carrinho){
         
         // Encontrar carrinho do usuario
         Usuario.find({"email": info_carrinho.email}).then((user) => {
@@ -166,9 +164,9 @@ module.exports = {
           carrinho = user[0].carrinho
 
           // Encontrar produto sendo modificado
-          Products.find({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}).then((produtos) => {
+          Products.find({"id_produto": info_carrinho.id_produto}).then((produtos) => {
 
-            prod_id = (produtos[0].titulo + "_" + produtos[0].fornecedor).toLowerCase()
+            prod_id = info_carrinho.id_produto
 
             if (produtos.length == 0){
               res.status(400).send({message: "Algum erro ocorreu ao tentar modificar o item."});
@@ -224,7 +222,7 @@ module.exports = {
             Usuario.updateOne({"email": info_carrinho.email}, {"carrinho": carrinho}).then(() =>{
 
               // Atualizar estoque
-              Products.updateOne({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}, 
+              Products.updateOne({"id_produto": info_carrinho.id_produto}, 
               {"quantidade_estoque": nova_qtd_produtos}).then(() =>{
 
                 res.status(204).send()
@@ -279,7 +277,7 @@ module.exports = {
     try {
       info_carrinho = req.body;
 
-      if ("email" in info_carrinho && "titulo" in info_carrinho && "fornecedor" in info_carrinho){
+      if ("email" in info_carrinho && "id_produto" in info_carrinho){
         
         // Encontrar carrinho do usuario
         Usuario.find({"email": info_carrinho.email}).then((user) => {
@@ -287,7 +285,7 @@ module.exports = {
           carrinho = user[0].carrinho
 
           // Encontrar produto sendo modificado
-          Products.find({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}).then((produtos) => {
+          Products.find({"id_produto": info_carrinho.id_produto}).then((produtos) => {
 
             prod_id = (produtos[0].titulo + "_" + produtos[0].fornecedor).toLowerCase()
 
@@ -319,7 +317,7 @@ module.exports = {
             Usuario.updateOne({"email": info_carrinho.email}, {"carrinho": carrinho}).then(() =>{
 
               // Atualizar estoque
-              Products.updateOne({"titulo": info_carrinho.titulo, "fornecedor": info_carrinho.fornecedor}, 
+              Products.updateOne({"id_produto": info_carrinho.id_produto}, 
               {"quantidade_estoque": nova_qtd_produtos}).then(() =>{
 
                 res.status(204).send()
@@ -381,12 +379,9 @@ module.exports = {
           carrinho = user[0].carrinho
         
           items = Object.getOwnPropertyNames(carrinho.produtos)
-
           for (let i = 0; i < items.length; i++){
-            tit_produto = carrinho.produtos[items[i]].titulo
-            for_produto = carrinho.produtos[items[i]].fornecedor
 
-            Products.updateOne({"titulo": tit_produto, "fornecedor": for_produto}, 
+            Products.updateOne({"id_produto": items[i]}, 
             {$inc: 
               {"quantidade_estoque": carrinho.produtos[items[i]].quantidade}
             }).then(() =>{

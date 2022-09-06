@@ -41,6 +41,7 @@ module.exports = {
       var novo_produto = new Products()
       novo_produto = req.body;
 
+      novo_produto.id_produto = (novo_produto.titulo + "_" + novo_produto.fornecedor).toLowerCase()
       novo_produto.data_ultima_entrada = new Date().getTime()
 
       // Adiciona o produto ao banco
@@ -65,16 +66,16 @@ module.exports = {
     try {
       produto = req.body;
 
-      if ("titulo" in info_carrinho && "fornecedor" in info_carrinho){
+      if ("id_produto" in produto){
         // Encontrar produtos
-        Products.findOne({"titulo": produto.titulo, "fornecedor": produto.fornecedor}).then((prod) =>{
+        Products.findOne({"id_produto": produto.id_produto}).then((prod) =>{
 
           if (prod.length == 0){
             res.status(404).send({message: "Nenhum produto encontrado"})
             return
           }
 
-          res.json(prod[0])
+          res.send(prod)
           
         // Se ocorrer erro
         }).catch((erro) =>{
@@ -89,6 +90,7 @@ module.exports = {
       }
 
     } catch (error) {
+      console.log(error)
       res.status(500).send({message: "Algum erro ocorreu - Produtos - 3"})
     }
   },
@@ -97,9 +99,9 @@ module.exports = {
     try {
       produto = req.body;
 
-      if ("titulo" in info_carrinho && "fornecedor" in info_carrinho){
+      if ("id_produto" in produto){
 
-        Products.updateOne({"titulo": produto.titulo, "fornecedor": produto.fornecedor}, produto).then((prod) =>{
+        Products.updateOne({"id_produto": produto.id_produto}, produto).then((prod) =>{
 
           if (prod.length == 0){
             res.status(404).send({message: "Nenhum produto encontrado"})
@@ -132,10 +134,10 @@ module.exports = {
     try {
       produto = req.body
     
-      if ("titulo" in info_carrinho && "fornecedor" in info_carrinho){
+      if ("id_produto" in produto){
         
       // Deleta o usuario do banco
-      Products.deleteOne({"titulo": produto.titulo, "fornecedor": produto.fornecedor}).then((prod) =>{
+      Products.deleteOne({"id_produto": produto.id_produto}).then((prod) =>{
         if (prod.length == 0){
           res.status(404).send({message: "Nenhum produto encontrado"})
           return
